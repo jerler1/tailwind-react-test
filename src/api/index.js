@@ -14,7 +14,7 @@ const api = {
     delete(id) {
         return ky.delete(`${baseUrl}/${id}`);
     },
-    
+                
     create(payload) {
         return ky.post(baseUrl, { json: payload}).json()
     },
