@@ -23,3 +23,5 @@ const api = {
         return ky.put(`${baseUrl}/${id}`, { json: payload })
     }
 }
+
+export default api;
