@@ -10,12 +10,32 @@ import {
   import PropTypes from "prop-types";
   import React from 'react';
   import EditableText from "./EditableText";
+  import { useMutation } from "react-query";
+  import api from "../../api/index";
+
+
   
   const RecordsTable = ( {records} ) => {
 
-    function handleUpdate(event) {
+    const updateRecord = useMutation(({ payload, id }) =>
+    api.update(payload, id)
+  );
 
-    }
+  function handleUpdate(event) {
+    const updatedRecord = {
+      ...records.find(
+        ({ id }) =>
+          id ===
+          // Make sure to check as a number!
+          Number(event.target.dataset.id)
+      ),
+      ...{ [event.target.dataset.key]: event.target.value },
+    };
+    updateRecord.mutate({
+      payload: updatedRecord,
+      id: event.target.dataset.id,
+    });
+  }
 
       return (
         <Table variant="simple">
@@ -31,13 +51,13 @@ import {
                 {records.map(({ id, artist, album, year }) => (
                   <Tr key={id} data-id={id}>
                     <Td>
-                        <EditableText value={artist} handler={handleUpdate} />
+                        <EditableText recordKey="artist" id={id} value={artist} handler={handleUpdate} />
                     </Td>
                     <Td>
-                        <EditableText value={album} handler={handleUpdate} />
+                        <EditableText recordKey="album" id={id} value={album} handler={handleUpdate} />
                     </Td>
                     <Td>
-                        <EditableText value={year} handler={handleUpdate} />
+                        <EditableText recordKey="year" id={id} value={year} handler={handleUpdate} />
                     </Td>
                   </Tr>
                 ))}
