@@ -11,7 +11,7 @@ import {
   import PropTypes from "prop-types";
   import React from 'react';
   import EditableText from "./EditableText";
-  import { useMutation } from "react-query";
+  import { QueryClient, useMutation, useQueryClient } from "react-query";
   import api from "../../api/index";
   import { DeleteIcon } from '@chakra-ui/icons';
   
@@ -31,6 +31,9 @@ import {
       ),
       ...{ [event.target.dataset.key]: event.target.value },
     };
+
+    const queryClient = useQueryClient(); 
+
     updateRecord.mutate({
       payload: updatedRecord,
       id: event.target.dataset.id,
@@ -38,7 +41,11 @@ import {
   }
   function handleDelete(event) {
     console.log('Gonna delete the record with id ' + event.target.dataset.id);
-    deleteRecord.mutate(event.target.dataset.id);
+    deleteRecord.mutate(event.target.dataset.id, {
+        onSuccess: async() => {
+            QueryClient.invalidateQueries("records");
+        },
+    });
   }
 
 
@@ -50,6 +57,7 @@ import {
                   <Th>Artist</Th>
                   <Th>Album</Th>
                   <Th>Year</Th>
+                  <Th></Th>
                 </Tr>
               </Thead>
               <Tbody>
