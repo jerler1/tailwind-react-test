@@ -1,4 +1,5 @@
 import {
+    Button,
     Table,
     TableCaption,
     Tbody,
@@ -12,15 +13,14 @@ import {
   import EditableText from "./EditableText";
   import { useMutation } from "react-query";
   import api from "../../api/index";
-
-
+  import { DeleteIcon } from '@chakra-ui/icons';
   
   const RecordsTable = ( {records} ) => {
 
     const updateRecord = useMutation(({ payload, id }) =>
     api.update(payload, id)
   );
-
+  const deleteRecord = useMutation(id => api.delete(id));
   function handleUpdate(event) {
     const updatedRecord = {
       ...records.find(
@@ -36,6 +36,11 @@ import {
       id: event.target.dataset.id,
     });
   }
+  function handleDelete(event) {
+    console.log('Gonna delete the record with id ' + event.target.dataset.id);
+    deleteRecord.mutate(event.target.dataset.id);
+  }
+
 
       return (
         <Table variant="simple">
@@ -58,6 +63,18 @@ import {
                     </Td>
                     <Td>
                         <EditableText recordKey="year" id={id} value={year} handler={handleUpdate} />
+                    </Td>
+                    <Td>
+                     <Button
+                        leftIcon={<DeleteIcon />}
+                        colorScheme="teal"
+                        variant="solid"
+                        size="xs"
+                        onClick={handleDelete}
+                        data-id={id}
+                     >
+                        Delete 🔥
+                     </Button>
                     </Td>
                   </Tr>
                 ))}
