@@ -2,7 +2,7 @@ import React from 'react';
 import { Text } from '@chakra-ui/react';
 import api from "../api/index";
 import RecordsTable from "../components/RecordsTable/RecordsTable";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import RecordsForm from "../components/RecordsForm";
 
 const fetchRecords = async () => await api.index();
@@ -11,10 +11,20 @@ const fetchRecords = async () => await api.index();
 const Records = () => {
     const { status, data, error } = useQuery("records", fetchRecords);
 
+    const addRecord = useMutation(payload => api.create(payload));
+
+    const queryClient = useQueryClient();
+
     const handleSubmit = event => {
         event.preventDefault();
-        console.log(new FormData(event.target));
+        addRecord.mutate(Object.fromEntries(new FormData(event.target)),
+        { onSuccess: () => {
+            queryClient.invalidateQueries("records");
+        },
+        });
       };
+
+      
 
     switch (status) {
         case "loading":
