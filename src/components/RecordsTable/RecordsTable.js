@@ -11,7 +11,7 @@ import {
   import PropTypes from "prop-types";
   import React from 'react';
   import EditableText from "./EditableText";
-  import { QueryClient, useMutation, useQueryClient } from "react-query";
+  import { useMutation, useQueryClient } from "react-query";
   import api from "../../api/index";
   import { DeleteIcon } from '@chakra-ui/icons';
   
